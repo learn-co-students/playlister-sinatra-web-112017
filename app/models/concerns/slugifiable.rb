@@ -3,15 +3,15 @@ module Slugifiable
   module InstanceMethods
 
     def slug
-      self.name.downcase.gsub(' ','-')
+      self.name.downcase.gsub('-','_').gsub(' ','-') if self.name
     end
   end
 
   module ClassMethods
 
     def find_by_slug(slug)
-      name = slug.split("-").map(&:capitalize).join(" ")
-      self.find_by(name: name)
+      slug_name = slug.split("-").join(" ").gsub('_','-')
+      self.all.where("lower(name) = ?", slug_name.downcase).first
     end
   end
 
